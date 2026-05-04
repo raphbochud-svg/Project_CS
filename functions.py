@@ -5,6 +5,8 @@ import random
 import pandas as pd
 import streamlit as st
 
+from weather import get_weather   # ← our small weather helper
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ── Constants ──────────────────────────────────────────────────────────────────
@@ -29,6 +31,21 @@ SLOT_ICONS   = {"Morning": "🌅", "Afternoon": "☀️", "Evening": "🌙"}
 def load_activities() -> pd.DataFrame:
     return pd.read_csv(os.path.join(_HERE, "locations.csv"))
 
+# ── Weather helper ────────────────────────────────────────────────────────────
+# Looks up a city's coordinates in our CSV, then asks Open-Meteo for the
+# forecast. The @st.cache_data line means Streamlit only calls the API
+# once per (city, num_days) combination — even if the page reruns.
+
+@st.cache_data(ttl=3600)   # cache the result for 1 hour
+def get_city_forecast(city: str, num_days: int) -> list[dict]:
+    df = load_activities()
+    rows_for_city = df[df["city"] == city]
+    if rows_for_city.empty:
+        return []
+    # Use the first activity's coordinates as the city's location.
+    lat = float(rows_for_city.iloc[0]["lat"])
+    lon = float(rows_for_city.iloc[0]["lon"])
+    return get_weather(lat, lon, num_days)
 
 def get_cities(df: pd.DataFrame) -> list[str]:
     """Return sorted list of cities from the CSV."""
