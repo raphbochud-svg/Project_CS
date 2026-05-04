@@ -116,3 +116,4 @@ if __name__ == "__main__":
     for day in get_weather(lat=47.37, lon=8.54, num_days=3):
         print(day)
 
+test
