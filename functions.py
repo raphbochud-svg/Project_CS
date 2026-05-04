@@ -217,6 +217,21 @@ def step_itinerary() -> None:
                     f'<div class="tt-header">Day {day_plan["day"]}</div>',
                     unsafe_allow_html=True,
                 )
+
+                # Show the weather for this day, if we have it.
+                # day_plan["day"] starts at 1, so the index is day - 1.
+                day_index = day_plan["day"] - 1
+                if day_index < len(forecast):
+                    w = forecast[day_index]
+                    col.markdown(
+                        f'<div style="font-size:0.85rem; color:#1a3a5c; '
+                        f'margin-bottom:0.5rem;">'
+                        f'{w["label"]} · {w["min"]}°/{w["max"]}°C · '
+                        f'rain {w["rain"]} mm'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
+                    
                 for slot, activity in day_plan["slots"].items():
                     is_free = activity.startswith("Free time")
                     css = "tt-free" if is_free else SLOT_CLASSES[slot]
