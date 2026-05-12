@@ -3,7 +3,7 @@ import requests
 
 
 # Open-Meteo describes the weather using a code known as a ‘weather code’.
-# We translate the most common codes into user-friendly emojis accompanied by a caption.)
+# We translate the most common codes into user-friendly emojis accompanied by a caption.
 WEATHER_CODES = {
     0:  ("Sun",   "Clear sky"),
     1:  ("Sun",   "Mostly clear"),
